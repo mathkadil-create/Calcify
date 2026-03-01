@@ -1,0 +1,84 @@
+name: Build Flutter APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release --split-per-abi
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: calcify-apk
+          path: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+```
+
+5. Scroll down → tap **"Commit new file"** ✅
+
+---
+
+## 🔷 PART 3 — Watch it Build Automatically!
+
+1. Go to your repository → tap the **"Actions"** tab at the top
+2. You'll see a job running called **"Build Flutter APK"** with a 🟡 yellow circle
+3. **Wait 5–10 minutes** ⏳
+4. When it turns 🟢 green → it's done!
+
+If it shows 🔴 red → take a screenshot and show me, I'll fix it immediately.
+
+---
+
+## 🔷 PART 4 — Download Your APK
+
+1. Click on the completed green job
+2. Scroll down to the bottom → find **"Artifacts"** section
+3. Tap **"calcify-apk"** → it downloads a ZIP file
+4. Open the ZIP → inside is your **APK file** 🎉
+
+---
+
+## 🔷 PART 5 — Install on Samsung S6
+
+1. Tap the APK file
+2. If blocked → **Settings → Security → Unknown sources → Allow**
+3. Tap **Install** → **Open**
+4. 🎉 Your Calcify calculator is running!
+
+---
+
+## 📌 Full Flow Summary
+```
+GitHub repo (your code)
+        ↓
+.github/workflows/build.yml  ← the magic file
+        ↓
+GitHub Actions builds APK automatically (free, in cloud)
+        ↓
+Download APK from Actions → Artifacts
+        ↓
+Install on Samsung S6 ✅
